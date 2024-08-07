@@ -3,17 +3,18 @@ import PillList from "../fields/PillList";
 
 import {Chip} from "@mui/material";
 import Stack from "@mui/material/Stack";
+import {useFormTypes} from "../../store/FormTypeContext";
 
 export default function EditForm() {
 
-    const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
     const [enteredType, setEnteredType] = useState<string>('');
     const [ message, setMessage ] = useState<string>('');
 
-    const addSelectedTypes = () => {
+    const { formTypes, addItem } = useFormTypes();
 
-        setSelectedTypes([...selectedTypes, enteredType]);
+    const addSelectedTypes = () => {
         setMessage(`Added ${enteredType} into the collected types...`);
+        addItem(enteredType);
         setEnteredType('')
 
         setTimeout(() => {
@@ -22,12 +23,18 @@ export default function EditForm() {
     }
 
     const handleSubmit = () => {
-        console.log('#DEBUG ... the types to submit: ', selectedTypes)
-    }
 
-    const handleDelete = (typeToRemove: string) => {
-        console.log('#DEBUG ... removing a type: ', typeToRemove);
-        setSelectedTypes(selectedTypes.filter(type => type !== typeToRemove))
+        console.log('#DEBUG .. then you can add the array into the collected form information. Form types: ', formTypes)
+        /**
+         * NOTE:
+         * I stopped here, since the 'service' part was not asked for. However it should look something like this below, and
+         * the entire object is passed as JSON parameters to a POST request
+         */
+        // formService.updateForm({
+        // subName: '... put the value here ',
+        // province: '... put the value from the form field here',
+        // formTypes: formTypes
+        // })
     }
 
     return(
@@ -42,7 +49,7 @@ export default function EditForm() {
                 <button type='button' className='edit-form-button' onClick={addSelectedTypes}>add type</button>
             </div>
             <div className='form-field'>
-                <PillList collection={selectedTypes} handleDelete={handleDelete} />
+                <PillList />
             </div>
             <button type='button' onClick={handleSubmit}>Submit form</button>
         </form>
